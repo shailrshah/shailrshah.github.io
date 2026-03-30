@@ -522,6 +522,10 @@
     .term-response .cmd-group {
       animation: fadeUp 0.25s ease forwards;
     }
+    .dynamic-output .cmd-group {
+      opacity: 1;
+      transform: none;
+    }
 
     /* Error line */
     .error-line {

@@ -372,18 +372,25 @@ function fillCmd(cmd) {
   runCommand();
 }
 
-function renderHTML(html, container) {
+function renderHTML(html, container, beforeEl) {
   const wrapper = document.createElement('div');
+  wrapper.classList.add('dynamic-output');
   wrapper.innerHTML = html;
   wrapper.style.opacity = '0';
   wrapper.style.transform = 'translateY(6px)';
   wrapper.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-  container.appendChild(wrapper);
+  if (beforeEl) {
+    container.insertBefore(wrapper, beforeEl);
+  } else {
+    container.appendChild(wrapper);
+  }
   requestAnimationFrame(() => {
     wrapper.style.opacity = '1';
     wrapper.style.transform = 'translateY(0)';
+    setTimeout(() => {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }, 300);
   });
-  wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   return wrapper;
 }
 
@@ -391,7 +398,8 @@ function runCommand() {
   const input = document.getElementById('termInput');
   const raw = input.value.trim();
   const key = raw.toLowerCase();
-  const responseArea = document.getElementById('termResponse');
+  const responseArea = document.getElementById('terminal');
+  const inputSection = document.getElementById('cmd-6');
 
   if (!raw) return;
 
@@ -407,11 +415,12 @@ function runCommand() {
   if (handler) {
     const result = typeof handler === 'function' ? handler() : handler;
     if (result === '__clear__') {
-      responseArea.innerHTML = '';
+      responseArea.querySelectorAll('.dynamic-output').forEach(el => el.remove());
       input.value = '';
       return;
     }
     if (result === '__exit__') {
+      responseArea.querySelectorAll('.dynamic-output').forEach(el => el.remove());
       input.value = '';
       closeWindow();
       return;
@@ -419,7 +428,7 @@ function runCommand() {
     if (result === '__sudo__') {
       // Step 1: show password prompt
       const step1 = `<div class="cmd-group"><div style="color:var(--dim);line-height:2;">[sudo] password for shail: <span style="letter-spacing:2px;color:var(--muted)">········</span></div></div>`;
-      const wrapper = renderHTML(promptHTML + step1, responseArea);
+      const wrapper = renderHTML(promptHTML + step1, responseArea, inputSection);
       input.value = '';
       input.disabled = true;
 
@@ -439,9 +448,10 @@ function runCommand() {
           </div>
         </div>`;
         wrapper.innerHTML += step2;
-        wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        var terminal = document.getElementById('terminal');
+        terminal.scrollTo({ top: terminal.scrollHeight, behavior: 'smooth' });
         input.disabled = false;
-        input.focus();
+        input.focus({ preventScroll: true });
       }, 900);
       return;
     }
@@ -450,7 +460,7 @@ function runCommand() {
     content = `<div class="cmd-group"><div class="error-line">bash: <span>${escapeHtml(raw)}</span>: command not found &nbsp; // try <span style="color:var(--cyan)">help</span></div></div>`;
   }
 
-  renderHTML(promptHTML + content, responseArea);
+  renderHTML(promptHTML + content, responseArea, inputSection);
   input.value = '';
 }
 
