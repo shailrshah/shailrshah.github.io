@@ -151,10 +151,13 @@
     .mail-label { color: var(--dim); font-size: 12px; width: 55px; flex-shrink: 0; }
     .mail-value { color: var(--cyan); font-size: 13px; }
     .mail-input {
-      flex: 1; background: transparent; border: none; outline: none;
-      color: var(--text); font-family: var(--font); font-size: 13px;
-      caret-color: var(--cyan);
+      flex: 1; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: 4px; padding: 4px 8px; color: var(--text); font-family: var(--font);
+      font-size: 13px; outline: none; caret-color: var(--cyan);
     }
+    .mail-input:focus { border-color: rgba(99,212,245,0.35); }
+    .mail-input.error, .mail-body.error { border-color: var(--coral); }
+    .mail-input.error:focus, .mail-body.error:focus { border-color: var(--coral); }
     .mail-body {
       width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
       border-radius: 6px; padding: 10px; color: var(--text); font-family: var(--font);
@@ -589,7 +592,7 @@
       <div class="dot dot-yellow" onclick="minimizeWindow()">−</div>
       <div class="dot dot-green" onclick="toggleFullscreen()">⤢</div>
     </div>
-    <div class="titlebar-label">guest@shailrshah — ~/resume — bash</div>
+    <div class="titlebar-label">guest@shail.dev — ~/resume — bash</div>
     <div class="titlebar-right"></div>
   </div>
 
@@ -605,7 +608,7 @@
     <!-- WHOAMI -->
     <div class="cmd-group" id="cmd-0">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">whoami</span>
       </div>
       <div class="output">
@@ -622,7 +625,7 @@
     <!-- SUMMARY -->
     <div class="cmd-group" id="cmd-1">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">cat summary.txt</span>
       </div>
       <div class="output">
@@ -635,7 +638,7 @@
     <!-- SKILLS -->
     <div class="cmd-group" id="cmd-2">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">./list_skills.sh</span>
       </div>
       <div class="output">
@@ -671,7 +674,7 @@
     <!-- EXPERIENCE -->
     <div class="cmd-group" id="cmd-3">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">./print_experience.sh</span> <span class="p-flag">--verbose</span>
       </div>
       <div class="output">
@@ -757,7 +760,7 @@
     <!-- EDUCATION -->
     <div class="cmd-group" id="cmd-4">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">cat education.txt</span>
       </div>
       <div class="output">
@@ -783,7 +786,7 @@
     <!-- CERTIFICATIONS -->
     <div class="cmd-group" id="cmd-5">
       <div class="prompt-line">
-        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+        <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
         <span class="p-cmd">ls</span> <span class="p-flag">-la</span> <span class="p-arg">./active_pursuits/</span>
       </div>
       <div class="output">
@@ -804,7 +807,7 @@
     <div class="input-section cmd-group" id="cmd-6">
       <p class="input-hint">// try a command — <strong>help</strong> to see what's available</p>
       <div class="input-row">
-        <span class="input-prompt-static">guest@shailrshah:~/resume (mainline) ❯&nbsp;</span>
+        <span class="input-prompt-static">guest@shail.dev:~/resume (mainline) ❯&nbsp;</span>
         <input type="text" id="termInput" placeholder="type a command..." autocomplete="off" spellcheck="false" />
         <button class="run-btn" onclick="runCommand()">↵ run</button>
       </div>
@@ -838,13 +841,13 @@
   <div class="terminal" style="min-height:auto;padding:16px 20px;">
     <div class="mail-fields">
       <div class="mail-row"><span class="mail-label">To:</span><span class="mail-value">acad.shail@gmail.com</span></div>
-      <div class="mail-row"><span class="mail-label">From:</span><input type="email" id="mailFrom" class="mail-input" /></div>
-      <div class="mail-row"><span class="mail-label">Subject:</span><input type="text" id="mailSubject" class="mail-input" /></div>
+      <div class="mail-row"><span class="mail-label">From:</span><input type="email" id="mailFrom" class="mail-input" placeholder="your@email.com" /></div>
+      <div class="mail-row"><span class="mail-label">Subject:</span><input type="text" id="mailSubject" class="mail-input" placeholder="Let's chat!" /></div>
     </div>
-    <textarea id="mailBody" class="mail-body" rows="6"></textarea>
+    <textarea id="mailBody" class="mail-body" rows="6" placeholder="Hey Shail, I'd love to connect about..."></textarea>
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
       <span id="mailStatus" style="color:var(--green);font-size:12px;align-self:center;"></span>
-      <button class="run-btn" onclick="sendMail()" style="padding:6px 16px;">⌘ Send</button>
+      <button class="run-btn" onclick="sendMail()" style="padding:6px 16px;">Send</button>
     </div>
   </div>
 </div>
@@ -858,22 +861,24 @@ function closeMail() {
   document.getElementById('desktop').classList.add('visible');
 }
 function sendMail() {
-  var from = document.getElementById('mailFrom').value;
-  var subject = document.getElementById('mailSubject').value || "Let's chat!";
-  var body = document.getElementById('mailBody').value;
+  var from = document.getElementById('mailFrom');
+  var body = document.getElementById('mailBody');
+  var subject = document.getElementById('mailSubject');
   var status = document.getElementById('mailStatus');
-  if (!from || !body) { status.style.color = 'var(--coral)'; status.textContent = '✗ Please fill in your email and message'; return; }
+  from.classList.remove('error'); body.classList.remove('error');
+  var hasError = false;
+  if (!from.value) { from.classList.add('error'); hasError = true; }
+  if (!body.value) { body.classList.add('error'); hasError = true; }
+  if (hasError) { status.style.color = 'var(--coral)'; status.textContent = '✗ Please fill in highlighted fields'; return; }
   status.style.color = 'var(--yellow)'; status.textContent = '⏳ Sending...';
   fetch('https://formspree.io/f/xgopkvzk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({ email: from, subject: subject, message: body })
+    body: JSON.stringify({ email: from.value, subject: subject.value || "Let's chat!", message: body.value })
   }).then(function(r) {
     if (r.ok) {
       status.style.color = 'var(--green)'; status.textContent = '✓ Message sent!';
-      document.getElementById('mailFrom').value = '';
-      document.getElementById('mailSubject').value = '';
-      document.getElementById('mailBody').value = '';
+      from.value = ''; subject.value = ''; body.value = '';
     } else { status.style.color = 'var(--coral)'; status.textContent = '✗ Failed to send. Try again.'; }
   }).catch(function() { status.style.color = 'var(--coral)'; status.textContent = '✗ Network error. Try again.'; });
 }
@@ -1202,7 +1207,7 @@ function runCommand() {
 
   const promptHTML = `
     <div class="prompt-line" style="margin-bottom:8px;">
-      <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shailrshah</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
+      <span class="p-user">guest</span><span class="p-at">@</span><span class="p-host">shail.dev</span><span class="p-sep">:</span><span class="p-dir">~/resume</span><span class="p-git">mainline</span><span class="p-sym">❯</span>
       <span class="p-cmd">${escapeHtml(raw)}</span>
     </div>`;
 
