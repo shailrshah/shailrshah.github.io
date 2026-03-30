@@ -151,6 +151,19 @@
     }
     .dock-indicator.active { opacity: 1; }
     .window.hidden { display: none; }
+
+    /* Desktop fixed icons */
+    .desktop-icons-fixed {
+      position: fixed;
+      top: 40px;
+      right: 40px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .desktop-icons-fixed a { text-decoration: none; color: inherit; }
     .window.fullscreen { max-width: 100%; margin: 0; border-radius: 0; border: none; }
 
     /* Mail */
@@ -571,6 +584,7 @@
     @media (max-width: 640px) {
       body { font-size: 12px; }
       .menubar { display: none; }
+      .desktop-icons-fixed { display: none; }
       .window { margin: 0; border-radius: 0; border-left: none; border-right: none; max-height: 100vh; }
       .titlebar { padding-top: max(12px, env(safe-area-inset-top)); }
       .terminal { padding: 14px 14px 20px; }
@@ -583,7 +597,8 @@
       .input-prompt-static { font-size: 0; }
       .input-prompt-static::before { content: '❯\00a0'; font-size: 13px; }
       .input-row { flex-wrap: wrap; gap: 6px; }
-      #termInput { min-width: 0; width: 100%; }
+      #termInput { min-width: 0; width: 100%; font-size: 16px; }
+      .mail-input, .mail-body { font-size: 16px; }
       .suggestions { gap: 5px; }
       .sug-btn { font-size: 11px; padding: 5px 8px; }
 

@@ -1,3 +1,25 @@
+function animateCursorAlongCurve(cursor, points, duration, cb) {
+  var start = performance.now();
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function bezier(pts, t) {
+    if (pts.length === 1) return pts[0];
+    var next = [];
+    for (var i = 0; i < pts.length - 1; i++)
+      next.push([lerp(pts[i][0], pts[i+1][0], t), lerp(pts[i][1], pts[i+1][1], t)]);
+    return bezier(next, t);
+  }
+  function step(now) {
+    var t = Math.min((now - start) / duration, 1);
+    var ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    var p = bezier(points, ease);
+    cursor.style.left = p[0] + 'px';
+    cursor.style.top = p[1] + 'px';
+    if (t < 1) requestAnimationFrame(step);
+    else if (cb) cb();
+  }
+  requestAnimationFrame(step);
+}
+
 function openMail() {
   document.getElementById('desktop').classList.remove('visible');
   document.getElementById('mailWindow').classList.remove('hidden');
@@ -489,29 +511,29 @@ document.getElementById('termInput').addEventListener('keydown', e => {
   var rect = icon.getBoundingClientRect();
   var tx = rect.left + rect.width / 2;
   var ty = rect.top + rect.height / 2;
+  var cx = window.innerWidth / 2;
+  var cy = window.innerHeight / 2;
 
-  // Start cursor at center of screen
-  cursor.style.left = (window.innerWidth / 2) + 'px';
-  cursor.style.top = (window.innerHeight / 2) + 'px';
+  cursor.style.transition = 'opacity 0.3s';
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
   cursor.classList.add('visible');
 
-  // Animate cursor to icon
-  cursor.style.transition = 'left 0.5s ease, top 0.5s ease, opacity 0.3s';
-  setTimeout(function() {
-    cursor.style.left = tx + 'px';
-    cursor.style.top = ty + 'px';
-  }, 200);
-
-  // Click effect then open
-  setTimeout(function() {
-    icon.style.transform = 'translateY(-4px)';
-    icon.style.color = 'var(--cyan)';
-  }, 800);
-
-  setTimeout(function() {
-    cursor.classList.remove('visible');
-    icon.style.transform = '';
-    icon.style.color = '';
-    openWindow();
-  }, 1100);
+  // Curve 1: explore right and up
+  animateCursorAlongCurve(cursor, [[cx,cy],[cx+200,cy-150],[cx+100,cy+80]], 400, function() {
+    // Curve 2: sweep left
+    animateCursorAlongCurve(cursor, [[cx+100,cy+80],[cx-100,cy+140],[cx-150,cy-20]], 400, function() {
+      // Curve 3: arc to the resume icon
+      animateCursorAlongCurve(cursor, [[cx-150,cy-20],[cx,cy+100],[tx,ty]], 350, function() {
+        icon.style.transform = 'translateY(-4px)';
+        icon.style.color = 'var(--cyan)';
+        setTimeout(function() {
+          cursor.classList.remove('visible');
+          icon.style.transform = '';
+          icon.style.color = '';
+          openWindow();
+        }, 300);
+      });
+    });
+  });
 })();
