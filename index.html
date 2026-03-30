@@ -37,7 +37,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
+      background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
       color: var(--text);
       font-family: var(--font);
       font-size: 13.5px;
@@ -111,8 +111,37 @@
       align-items: flex-end;
       justify-content: center;
       padding-bottom: 10px;
+      position: relative;
+      overflow: hidden;
     }
     .desktop.visible { display: flex; }
+    .starfield {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+    .stars1, .stars2, .stars3 {
+      position: absolute;
+      top: 0; left: 0;
+      background: transparent;
+    }
+    .stars1, .stars1::after { width: 1px; height: 1px; }
+    .stars2, .stars2::after { width: 2px; height: 2px; }
+    .stars3, .stars3::after { width: 3px; height: 3px; }
+    .stars1::after, .stars2::after, .stars3::after {
+      content: '';
+      position: absolute;
+      top: 2000px;
+      background: transparent;
+    }
+    .stars1 { animation: animStar 50s linear infinite; }
+    .stars2 { animation: animStar 100s linear infinite; }
+    .stars3 { animation: animStar 150s linear infinite; }
+    @keyframes animStar {
+      from { transform: translateY(0); }
+      to { transform: translateY(-2000px); }
+    }
     .dock {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
@@ -559,7 +588,7 @@
     /* ── Mobile ── */
     @media (max-width: 640px) {
       body { font-size: 12px; }
-      .window { margin: 0; border-radius: 0; border-left: none; border-right: none; }
+      .window { margin: 0; margin-top: 28px; border-radius: 0; border-left: none; border-right: none; }
       .terminal { padding: 14px 14px 20px; }
       .name-display { font-size: 1.6rem; }
       .skills-grid { grid-template-columns: 1fr; }
@@ -596,6 +625,12 @@
   </style>
 </head>
 <body>
+
+<div class="starfield">
+  <div class="stars1" id="stars1"></div>
+  <div class="stars2" id="stars2"></div>
+  <div class="stars3" id="stars3"></div>
+</div>
 
 <div class="menubar" id="menubar">
   <span id="menuClock"></span>
@@ -652,7 +687,7 @@
         <div class="contact-grid">
           <span class="c-key">loc</span><span class="c-val">Sunnyvale, CA</span>
           <span class="c-key">tel</span><span class="c-val">+1 (669) 224-8809</span>
-          <span class="c-key">eml</span><span class="c-val"><a href="#" onclick="event.preventDefault();animateToContact();" style="color:var(--cyan);text-decoration:none;cursor:pointer;">acad.shail@gmail.com</a></span>
+          <span class="c-key">eml</span><span class="c-val"><a href="#" onclick="event.preventDefault();animateToContact(event.clientX,event.clientY);" style="color:var(--cyan);text-decoration:none;cursor:pointer;">acad.shail@gmail.com</a></span>
           <span class="c-key">web</span><span class="c-val"><a href="https://linkedin.com/in/shailrshah" target="_blank">linkedin.com/in/shailrshah</a></span>
         </div>
       </div>
@@ -926,15 +961,14 @@ function sendMail() {
   }).catch(function() { status.style.color = 'var(--coral)'; status.textContent = '✗ Network error. Try again.'; });
 }
 
-function animateToContact() {
+function animateToContact(startX, startY) {
   var cursor = document.getElementById('fakeCursor');
   var yellowDot = document.querySelector('#window .dot-yellow');
   var r1 = yellowDot.getBoundingClientRect();
 
-  // Show cursor at center, move to yellow dot
   cursor.style.transition = 'none';
-  cursor.style.left = (window.innerWidth / 2) + 'px';
-  cursor.style.top = (window.innerHeight / 2) + 'px';
+  cursor.style.left = (startX || window.innerWidth / 2) + 'px';
+  cursor.style.top = (startY || window.innerHeight / 2) + 'px';
   cursor.classList.add('visible');
 
   setTimeout(function() {
@@ -1321,10 +1355,12 @@ function runCommand() {
           <div style="color:var(--dim);margin-bottom:6px;">Verifying…</div>
           <div style="color:var(--green);font-size:1.1em;font-weight:700;">✓ Password accepted. Great choice.</div>
           <div style="margin-top:10px;color:var(--text);line-height:1.8;">
-            Initiating <span style="color:var(--purple)">hire_shail</span> sequence…<br>
-            → Checking calendar availability &nbsp;<span style="color:var(--green)">[ open ]</span><br>
-            → Validating enthusiasm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">[ high ]</span><br>
-            → Confirming fit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green)">[ excellent ]</span><br><br>
+            Initiating <span style="color:var(--purple)">hire_shail</span> sequence…
+            <div style="display:grid;grid-template-columns:auto auto;gap:2px 12px;width:fit-content;margin-top:6px;">
+              <span>→ Checking calendar availability</span><span style="color:var(--green)">[ open ]</span>
+              <span>→ Validating enthusiasm</span><span style="color:var(--green)">[ high ]</span>
+              <span>→ Confirming fit</span><span style="color:var(--green)">[ excellent ]</span>
+            </div><br>
             Next step: <a href="mailto:acad.shail[at]gmail.com" data-email="acad.shail@gmail.com" onclick="this.href='mailto:'+this.dataset.email;return true;" style="color:var(--cyan);text-decoration:none;">acad.shail@gmail.com</a>
           </div>
         </div>`;
@@ -1352,6 +1388,23 @@ function escapeHtml(s) {
 document.getElementById('termInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') runCommand();
 });
+
+(function generateStars() {
+  function shadows(n) {
+    var s = [];
+    for (var i = 0; i < n; i++) s.push(Math.floor(Math.random()*2000)+'px '+Math.floor(Math.random()*2000)+'px #FFF');
+    return s.join(',');
+  }
+  var s1 = shadows(400), s2 = shadows(100), s3 = shadows(50);
+  document.getElementById('stars1').style.boxShadow = s1;
+  document.getElementById('stars1').style.cssText += 'box-shadow:'+s1;
+  document.getElementById('stars2').style.cssText += 'box-shadow:'+s2;
+  document.getElementById('stars3').style.cssText += 'box-shadow:'+s3;
+  // ::after shadows via stylesheet
+  var sheet = document.createElement('style');
+  sheet.textContent = '#stars1::after{box-shadow:'+s1+'}#stars2::after{box-shadow:'+s2+'}#stars3::after{box-shadow:'+s3+'}';
+  document.head.appendChild(sheet);
+})();
 
 (function tickClock() {
   var el = document.getElementById('menuClock');
