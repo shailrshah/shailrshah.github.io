@@ -97,9 +97,9 @@
       color: transparent;
       line-height: 1;
     }
-    .dots:hover .dot-red { color: #4d0000; }
-    .dots:hover .dot-yellow { color: #995700; }
-    .dots:hover .dot-green { color: #006500; }
+    .dots:hover .dot-red, .dots.hover-fake .dot-red { color: #4d0000; }
+    .dots:hover .dot-yellow, .dots.hover-fake .dot-yellow { color: #995700; }
+    .dots:hover .dot-green, .dots.hover-fake .dot-green { color: #006500; }
     .dot-red    { background: #ff5f57; box-shadow: 0 0 6px #ff5f5766; cursor: pointer; }
     .dot-yellow { background: #febc2e; box-shadow: 0 0 6px #febc2e66; cursor: pointer; }
     .dot-green  { background: #28c840; box-shadow: 0 0 6px #28c84066; cursor: pointer; }
@@ -522,7 +522,35 @@
     }
     .error-line span { color: var(--muted); }
 
-    /* ── Scrollbar ── */
+    /* Menu bar */
+    .menubar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 28px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--text);
+      z-index: 9998;
+      font-family: var(--font);
+    }
+
+    /* Animated cursor */
+    .fake-cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .fake-cursor.visible { opacity: 1; }
+    .fake-cursor svg { width: 100%; height: 100%; }
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -569,7 +597,15 @@
 </head>
 <body>
 
-<div class="desktop" id="desktop">
+<div class="menubar" id="menubar">
+  <span id="menuClock"></span>
+</div>
+
+<div class="fake-cursor" id="fakeCursor">
+  <svg viewBox="0 0 24 24" fill="var(--text)" stroke="none"><path d="M5 3l14 8-6.5 1.5L10 19z"/></svg>
+</div>
+
+<div class="desktop visible" id="desktop">
   <div class="dock">
     <div class="desktop-icon" onclick="openWindow()">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="7 8 10 11 7 14" opacity="0.7"/></svg>
@@ -579,18 +615,18 @@
     <div class="desktop-icon" onclick="openMail()">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 4 12 13 2 4"/></svg>
       Contact Shail
-      <div class="dock-indicator active"></div>
+      <div class="dock-indicator" id="mailDockDot"></div>
     </div>
   </div>
 </div>
 
-<div class="window" id="window">
+<div class="window hidden" id="window">
   <!-- Window chrome -->
   <div class="titlebar">
     <div class="dots">
       <div class="dot dot-red" onclick="closeWindow()">×</div>
       <div class="dot dot-yellow" onclick="minimizeWindow()">−</div>
-      <div class="dot dot-green" onclick="toggleFullscreen()">⤢</div>
+      <div class="dot dot-green">⤢</div>
     </div>
     <div class="titlebar-label">guest@shail.dev — ~/resume — bash</div>
     <div class="titlebar-right"></div>
@@ -616,7 +652,7 @@
         <div class="contact-grid">
           <span class="c-key">loc</span><span class="c-val">Sunnyvale, CA</span>
           <span class="c-key">tel</span><span class="c-val">+1 (669) 224-8809</span>
-          <span class="c-key">eml</span><span class="c-val"><span class="__cf_email__" data-cfemail="d9b8bab8bdf7aab1b8b0b599beb4b8b0b5f7bab6b4">acad.shail@gmail.com</span></span>
+          <span class="c-key">eml</span><span class="c-val"><a href="#" onclick="event.preventDefault();animateToContact();" style="color:var(--cyan);text-decoration:none;cursor:pointer;">acad.shail@gmail.com</a></span>
           <span class="c-key">web</span><span class="c-val"><a href="https://linkedin.com/in/shailrshah" target="_blank">linkedin.com/in/shailrshah</a></span>
         </div>
       </div>
@@ -828,11 +864,11 @@
 
 
 <!-- Mail Window -->
-<div class="window hidden" id="mailWindow" style="max-width:600px;">
+<div class="window hidden" id="mailWindow" style="max-width:700px;width:90%;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;">
   <div class="titlebar">
     <div class="dots">
       <div class="dot dot-red" onclick="closeMail()">×</div>
-      <div class="dot dot-yellow" onclick="closeMail()">−</div>
+      <div class="dot dot-yellow" onclick="minimizeMail()">−</div>
       <div class="dot dot-green">⤢</div>
     </div>
     <div class="titlebar-label">New Message</div>
@@ -851,6 +887,7 @@
     </div>
   </div>
 </div>
+
 <script>
 function openMail() {
   document.getElementById('desktop').classList.remove('visible');
@@ -859,6 +896,12 @@ function openMail() {
 function closeMail() {
   document.getElementById('mailWindow').classList.add('hidden');
   document.getElementById('desktop').classList.add('visible');
+  document.getElementById('mailDockDot').classList.remove('active');
+}
+function minimizeMail() {
+  document.getElementById('mailWindow').classList.add('hidden');
+  document.getElementById('desktop').classList.add('visible');
+  document.getElementById('mailDockDot').classList.add('active');
 }
 function sendMail() {
   var from = document.getElementById('mailFrom');
@@ -881,6 +924,44 @@ function sendMail() {
       from.value = ''; subject.value = ''; body.value = '';
     } else { status.style.color = 'var(--coral)'; status.textContent = '✗ Failed to send. Try again.'; }
   }).catch(function() { status.style.color = 'var(--coral)'; status.textContent = '✗ Network error. Try again.'; });
+}
+
+function animateToContact() {
+  var cursor = document.getElementById('fakeCursor');
+  var yellowDot = document.querySelector('#window .dot-yellow');
+  var r1 = yellowDot.getBoundingClientRect();
+
+  // Show cursor at center, move to yellow dot
+  cursor.style.transition = 'none';
+  cursor.style.left = (window.innerWidth / 2) + 'px';
+  cursor.style.top = (window.innerHeight / 2) + 'px';
+  cursor.classList.add('visible');
+
+  setTimeout(function() {
+    cursor.style.transition = 'left 0.6s ease, top 0.6s ease';
+    cursor.style.left = (r1.left + r1.width / 2) + 'px';
+    cursor.style.top = (r1.top + r1.height / 2) + 'px';
+  }, 100);
+
+  // Show dot icons on hover
+  setTimeout(function() { yellowDot.parentElement.classList.add('hover-fake'); }, 500);
+
+  // Click yellow dot to minimize
+  setTimeout(function() { yellowDot.parentElement.classList.remove('hover-fake'); minimizeWindow(); }, 800);
+
+  // Move cursor to contact icon in dock
+  setTimeout(function() {
+    var mailIcon = document.querySelectorAll('#desktop .desktop-icon')[1];
+    var r2 = mailIcon.getBoundingClientRect();
+    cursor.style.left = (r2.left + r2.width / 2) + 'px';
+    cursor.style.top = (r2.top + r2.height / 2) + 'px';
+  }, 1100);
+
+  // Click contact icon
+  setTimeout(function() {
+    cursor.classList.remove('visible');
+    openMail();
+  }, 1800);
 }
 
 var wasMinimized = false;
@@ -1174,6 +1255,7 @@ const responses = {
   </div>`,
 
   'clear': () => '__clear__',
+  'exit': () => '__exit__',
 };
 
 // sudo hire shail — auto-resolving flow
@@ -1221,6 +1303,11 @@ function runCommand() {
       input.value = '';
       return;
     }
+    if (result === '__exit__') {
+      input.value = '';
+      closeWindow();
+      return;
+    }
     if (result === '__sudo__') {
       // Step 1: show password prompt
       const step1 = `<div class="cmd-group"><div style="color:var(--dim);line-height:2;">[sudo] password for shail: <span style="letter-spacing:2px;color:var(--muted)">········</span></div></div>`;
@@ -1266,19 +1353,47 @@ document.getElementById('termInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') runCommand();
 });
 
-(function revealSequentially() {
-  var groups = document.querySelectorAll('.cmd-group[id^="cmd-"]');
-  var delay = 0;
-  groups.forEach(function(g, i) {
-    delay += (i === 0 ? 200 : 800);
-    setTimeout(function() {
-      g.classList.add('visible');
-      g.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      if (i === groups.length - 1) {
-        setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 600);
-      }
-    }, delay);
-  });
+(function tickClock() {
+  var el = document.getElementById('menuClock');
+  function update() {
+    var d = new Date();
+    el.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + '  ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+  update();
+  setInterval(update, 10000);
+})();
+
+(function autoOpen() {
+  var cursor = document.getElementById('fakeCursor');
+  var icon = document.querySelector('#desktop .desktop-icon');
+  var rect = icon.getBoundingClientRect();
+  var tx = rect.left + rect.width / 2;
+  var ty = rect.top + rect.height / 2;
+
+  // Start cursor at center of screen
+  cursor.style.left = (window.innerWidth / 2) + 'px';
+  cursor.style.top = (window.innerHeight / 2) + 'px';
+  cursor.classList.add('visible');
+
+  // Animate cursor to icon
+  cursor.style.transition = 'left 0.8s ease, top 0.8s ease, opacity 0.3s';
+  setTimeout(function() {
+    cursor.style.left = tx + 'px';
+    cursor.style.top = ty + 'px';
+  }, 400);
+
+  // Click effect then open
+  setTimeout(function() {
+    icon.style.transform = 'translateY(-4px)';
+    icon.style.color = 'var(--cyan)';
+  }, 1300);
+
+  setTimeout(function() {
+    cursor.classList.remove('visible');
+    icon.style.transform = '';
+    icon.style.color = '';
+    openWindow();
+  }, 1700);
 })();
 </script>
 </body>
