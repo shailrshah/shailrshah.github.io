@@ -564,10 +564,10 @@ document.getElementById('termInput').addEventListener('keydown', e => {
   var el = document.getElementById('menuClock');
   function update() {
     var d = new Date();
-    el.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + '  ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    el.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + '  ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   }
   update();
-  setInterval(update, 10000);
+  setInterval(update, 1000);
 })();
 
 (function autoOpen() {
