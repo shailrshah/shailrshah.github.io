@@ -775,7 +775,11 @@ function minimizeBlogFinder() {
 
 function showBlogList() {
   playClick();
+  var finder = document.getElementById('blogFinder');
   document.getElementById('blogTitlebar').textContent = '~/blog';
+  finder.style.top = '50%';
+  finder.style.transform = 'translate(-50%,-50%)';
+  finder.style.maxHeight = '80vh';
   var list = document.getElementById('blogFileList');
   list.innerHTML = blogPosts.map(function(p) {
     return '<div class="blog-file" onclick="openBlogPost(\'' + p.file + '\',\'' + escapeHtml(p.title) + '\',\'' + p.date + '\')">' +
@@ -789,6 +793,10 @@ function showBlogList() {
 
 function openBlogPost(file, title, date) {
   playClick();
+  var finder = document.getElementById('blogFinder');
+  finder.style.top = '2.5rem';
+  finder.style.transform = 'translateX(-50%)';
+  finder.style.maxHeight = 'calc(100vh - 5rem)';
   document.getElementById('blogTitlebar').textContent = '~/blog/' + file;
   document.getElementById('blogFileList').style.display = 'none';
   var view = document.getElementById('blogPostView');
