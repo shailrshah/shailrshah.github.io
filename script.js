@@ -825,6 +825,10 @@ window.addEventListener('popstate', function(e) {
   sessionStorage.removeItem('openBlogPost');
   var post = blogPosts.find(function(p) { return p.file.replace('.md', '') === slug; });
   if (!post) return;
+  var splash = document.getElementById('splash');
+  if (splash) splash.remove();
+  splashDismissed = true;
+  localStorage.setItem('visited', '1');
   setTimeout(function() { openBlogFinder(); openBlogPost(post.file, post.title, post.date, false); }, 100);
 })();
 
