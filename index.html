@@ -7,7 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon_io/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png">
+  <link rel="manifest" href="favicon_io/site.webmanifest">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 </head>
 <body>
 
@@ -36,6 +42,11 @@
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="7 8 10 11 7 14" opacity="0.7"/></svg>
     Shail's Resume
     <div class="dock-indicator" id="dockDot"></div>
+  </div>
+  <div class="desktop-icon" onclick="dockBlogClick()">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    Blog
+    <div class="dock-indicator" id="blogDockDot"></div>
   </div>
   <div class="desktop-icon" onclick="dockMailClick()">
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 4 12 13 2 4"/></svg>
@@ -347,6 +358,26 @@
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
       <span id="mailStatus" style="color:var(--green);font-size:12px;align-self:center;"></span>
       <button class="run-btn" onclick="sendMail()" style="padding:6px 16px;">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Blog Finder Window -->
+<div class="window hidden" id="blogFinder" style="max-width:900px;width:90%;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;max-height:80vh;">
+  <div class="titlebar">
+    <div class="dots">
+      <div class="dot dot-red" onclick="closeBlogFinder()">×</div>
+      <div class="dot dot-yellow" onclick="minimizeBlogFinder()">−</div>
+      <div class="dot dot-green">⤢</div>
+    </div>
+    <div class="titlebar-label" id="blogTitlebar">~/blog</div>
+    <div class="titlebar-right"></div>
+  </div>
+  <div class="terminal" style="min-height:auto;padding:16px 20px;height:auto;max-height:calc(80vh - 50px);overflow-y:auto;">
+    <div id="blogFileList"></div>
+    <div id="blogPostView" class="blog-content" style="display:none;">
+      <div class="blog-back" onclick="showBlogList()">← back</div>
+      <div id="blogPostBody"></div>
     </div>
   </div>
 </div>

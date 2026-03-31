@@ -1,3 +1,6 @@
+
+var topZ = 100;
+function bringToFront(el) { el.style.zIndex = ++topZ; }
 var audioCtx;
 function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
 
@@ -95,10 +98,14 @@ function isMailOpen() {
   return !document.getElementById('mailWindow').classList.contains('hidden');
 }
 
+function minimizeAll() {
+  if (!document.getElementById('window').classList.contains('hidden')) minimizeWindow();
+  if (!document.getElementById('mailWindow').classList.contains('hidden')) minimizeMail();
+  if (!document.getElementById('blogFinder').classList.contains('hidden')) minimizeBlogFinder();
+}
+
 function dockResumeClick() {
-  if (isMailOpen()) {
-    minimizeMail();
-  }
+  minimizeAll();
   openWindow();
 }
 
@@ -116,9 +123,11 @@ function dockMailClick() {
 }
 
 function openMail() {
+  minimizeAll();
   playClick();
   document.getElementById('mailWindow').classList.remove('hidden');
   document.getElementById('mailDockDot').classList.add('active');
+  bringToFront(document.getElementById('mailWindow'));
 }
 function closeMail() {
   playClick();
@@ -182,7 +191,7 @@ function animateToContact(startX, startY) {
 
   // Move cursor to contact icon in dock
   setTimeout(function() {
-    var mailIcon = document.querySelectorAll('#dock .desktop-icon')[1];
+    var mailIcon = document.querySelectorAll('#dock .desktop-icon')[2];
     var r2 = mailIcon.getBoundingClientRect();
     cursor.style.left = (r2.left + r2.width / 2) + 'px';
     cursor.style.top = (r2.top + r2.height / 2) + 'px';
@@ -260,6 +269,7 @@ function openWindow() {
   document.getElementById('window').classList.remove('hidden');
   document.getElementById('dock').classList.add('hidden');
   setIconsHidden(true);
+  bringToFront(document.getElementById('window'));
   if (!wasMinimized) {
     var groups = document.querySelectorAll('.cmd-group[id^="cmd-"]');
     groups.forEach(function(g) { g.classList.remove('visible'); });
@@ -719,5 +729,75 @@ function autoOpen() {
         }, 300);
       });
     });
+  });
+}
+
+/* ── Blog ── */
+var blogPosts = [
+  { file: 'hello-world.md', title: 'Hello, World!', date: '2026-03-30' },
+  { file: 'prospective-hindsight.md', title: 'Prospective Hindsight', date: '2026-03-31' }
+].sort(function(a, b) { return b.date.localeCompare(a.date); });
+
+function isBlogFinderOpen() { return !document.getElementById('blogFinder').classList.contains('hidden'); }
+
+function dockBlogClick() {
+  if (isBlogFinderOpen()) {
+    playError();
+    var bf = document.getElementById('blogFinder');
+    bf.style.animation = 'none'; bf.offsetHeight;
+    bf.style.animation = 'shake 0.4s ease';
+    bf.addEventListener('animationend', function() { bf.style.animation = ''; }, { once: true });
+    return;
+  }
+  openBlogFinder();
+}
+
+function openBlogFinder() {
+  minimizeAll();
+  playClick();
+  showBlogList();
+  document.getElementById('blogFinder').classList.remove('hidden');
+  document.getElementById('blogDockDot').classList.add('active');
+  bringToFront(document.getElementById('blogFinder'));
+}
+
+function closeBlogFinder() {
+  playClick();
+  document.getElementById('blogFinder').classList.add('hidden');
+  document.getElementById('blogDockDot').classList.remove('active');
+}
+
+function minimizeBlogFinder() {
+  playClick();
+  document.getElementById('blogFinder').classList.add('hidden');
+  document.getElementById('blogDockDot').classList.add('active');
+}
+
+function showBlogList() {
+  playClick();
+  document.getElementById('blogTitlebar').textContent = '~/blog';
+  var list = document.getElementById('blogFileList');
+  list.innerHTML = blogPosts.map(function(p) {
+    return '<div class="blog-file" onclick="openBlogPost(\'' + p.file + '\',\'' + escapeHtml(p.title) + '\',\'' + p.date + '\')">' +
+      '<span class="blog-file-icon">📄</span>' +
+      '<span class="blog-file-name">' + escapeHtml(p.title) + '</span>' +
+      '<span class="blog-file-date">' + p.date + '</span></div>';
+  }).join('');
+  list.style.display = '';
+  document.getElementById('blogPostView').style.display = 'none';
+}
+
+function openBlogPost(file, title, date) {
+  playClick();
+  document.getElementById('blogTitlebar').textContent = '~/blog/' + file;
+  document.getElementById('blogFileList').style.display = 'none';
+  var view = document.getElementById('blogPostView');
+  var body = document.getElementById('blogPostBody');
+  view.style.display = '';
+  body.innerHTML = '<div style="color:var(--dim)">Loading...</div>';
+  fetch('blog/' + file).then(function(r) { return r.text(); }).then(function(md) {
+    body.innerHTML = '<div style="color:var(--dim);font-size:12px;margin-bottom:12px;">Published: ' + date + '</div>' + marked.parse(md);
+  }).catch(function() {
+    body.innerHTML = '<div class="error-line">Failed to load ' + escapeHtml(file) + '</div>';
   });
 }
