@@ -735,7 +735,8 @@ function autoOpen() {
 /* ── Blog ── */
 var blogPosts = [
   { file: 'hello-world.md', title: 'Hello, World!', date: '2026-03-30' },
-  { file: 'prospective-hindsight.md', title: 'Prospective Hindsight', date: '2026-03-31' }
+  { file: 'prospective-hindsight.md', title: 'Prospective Hindsight', date: '2026-03-31' },
+  { file: 'building-shail-dev.md', title: 'Building shail.dev', date: '2026-03-31' }
 ].sort(function(a, b) { return b.date.localeCompare(a.date); });
 
 function isBlogFinderOpen() { return !document.getElementById('blogFinder').classList.contains('hidden'); }
