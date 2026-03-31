@@ -87,11 +87,6 @@
     var p = location.pathname;
     document.getElementById('path').textContent = p;
     document.getElementById('path2').textContent = p;
-    var blogMatch = p.match(/^\/blog\/(.+)$/);
-    if (blogMatch) {
-      sessionStorage.setItem('openBlogPost', blogMatch[1]);
-      location.replace('/');
-    }
   </script>
 </body>
 </html>
