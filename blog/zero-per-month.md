@@ -50,13 +50,13 @@ SSL is handled via Let's Encrypt — provisioned and renewed automatically. HTTP
 
 Getting `hi@shail.dev` to land in my Gmail inbox used to require a paid mail host. Cloudflare Email Routing intercepts at the DNS level and forwards to wherever you configure. No third-party mail server, no cost.
 
+![Receiving email](../assets/blog/zero-per-month/receive_email.png)
+
 ---
 
 ## Brevo: sending as your domain without the spam folder
 
 Receiving is the easy part. The harder problem is sending *from* `hi@shail.dev` via Gmail and having it actually arrive.
-
-![Receiving email](../assets/blog/zero-per-month/receive_email.png)
 
 Brevo acts as an SMTP relay — a trusted mail server that sends on your behalf, authenticated with your domain. Their free tier covers 300 emails a day, which is more than enough for a personal site. You add SPF, DKIM, and DMARC records to your DNS once; after that, delivery just works.
 
