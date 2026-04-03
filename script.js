@@ -809,7 +809,10 @@ function openBlogPost(file, title, date) {
   var body = document.getElementById('blogPostBody');
   view.style.display = '';
   body.innerHTML = '<div style="color:var(--dim)">Loading...</div>';
-  fetch('blog/' + file).then(function(r) { return r.text(); }).then(function(md) {
+  fetch('/blog/' + file).then(function(r) {
+    if (!r.ok || !(r.headers.get('content-type') || '').includes('markdown')) throw new Error('not found');
+    return r.text();
+  }).then(function(md) {
     body.innerHTML = '<div style="color:var(--dim);font-size:12px;margin-bottom:12px;">Published: ' + date + '</div>' + marked.parse(md);
   }).catch(function() {
     body.innerHTML = '<div class="error-line">Failed to load ' + escapeHtml(file) + '</div>';
