@@ -34,6 +34,12 @@ function withSecurityHeaders(response) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.hostname === 'www.shail.dev') {
+      url.hostname = 'shail.dev';
+      return Response.redirect(url.toString(), 301);
+    }
+
     const path = url.pathname.replace(/\/$/, '') || '/';
 
     // Pass static assets straight through
