@@ -2,12 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shaildev",
   "compatibility_date": "2026-04-02",
+  "main": "worker.js",
   "observability": {
     "enabled": true
   },
   "assets": {
     "directory": ".",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
   },
   "compatibility_flags": [
     "nodejs_compat"
