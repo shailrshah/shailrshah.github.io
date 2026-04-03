@@ -31,7 +31,10 @@ export default {
     // Blog post — inject OG tags
     if (blogSlug) {
       const post = blogPosts[blogSlug[1]];
-      if (!post) return new Response('Not Found', { status: 404 });
+      if (!post) {
+        const notFound = await env.ASSETS.fetch(new Request(new URL('/404.html', url.origin), request));
+        return new Response(notFound.body, { status: 404, headers: notFound.headers });
+      }
 
       const [indexRes, mdRes] = await Promise.all([
         env.ASSETS.fetch(new Request(new URL('/index.html', url.origin), request)),
@@ -57,6 +60,7 @@ export default {
     }
 
     // Unknown route → 404
-    return new Response('Not Found', { status: 404 });
+    const notFound = await env.ASSETS.fetch(new Request(new URL('/404.html', url.origin), request));
+    return new Response(notFound.body, { status: 404, headers: notFound.headers });
   }
 };
