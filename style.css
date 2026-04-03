@@ -720,12 +720,12 @@
       border-color: rgba(99,212,245,0.5);
     }
     .splash-footer {
-      position: absolute;
-      bottom: 18%;
+      margin-top: 24px;
       font-size: 11px;
       color: var(--dim);
       text-align: center;
       padding: 0 24px;
+      line-height: 1.6;
     }
 
     /* Toast */
