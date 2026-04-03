@@ -132,6 +132,7 @@ function openMail() {
 }
 function closeMail() {
   playClick();
+  history.pushState({}, '', '/');
   document.getElementById('mailWindow').classList.add('hidden');
   document.getElementById('mailDockDot').classList.remove('active');
 }
@@ -248,6 +249,7 @@ function animateToDesktopIcon(iconId, startX, startY) {
 
 function closeWindow() {
   playClick();
+  history.pushState({}, '', '/');
   wasMinimized = false;
   document.getElementById('window').classList.add('hidden');
   document.getElementById('desktop').classList.add('visible');
@@ -768,6 +770,7 @@ function openBlogFinder() {
 
 function closeBlogFinder() {
   playClick();
+  history.pushState({}, '', '/');
   document.getElementById('blogFinder').classList.add('hidden');
   document.getElementById('blogDockDot').classList.remove('active');
 }
@@ -780,6 +783,7 @@ function minimizeBlogFinder() {
 
 function showBlogList() {
   playClick();
+  history.pushState({}, '', '/blog');
   var finder = document.getElementById('blogFinder');
   document.getElementById('blogTitlebar').textContent = '~/blog';
   finder.style.top = '50%';
@@ -848,3 +852,17 @@ console.log(
     if (post) { skipSplash(); setTimeout(function() { openBlogFinder(); openBlogPost(post.file, post.title, post.date); }, 100); }
   }
 })();
+
+window.addEventListener('popstate', function() {
+  var path = location.pathname;
+  var blogSlug = path.match(/^\/blog\/(.+)$/);
+  if (path === '/resume') { minimizeAll(); openWindow(); }
+  else if (path === '/contact') { minimizeAll(); openMail(); }
+  else if (path === '/blog') { minimizeAll(); openBlogFinder(); }
+  else if (blogSlug) {
+    var post = blogPosts.find(function(p) { return p.file.replace('.md', '') === blogSlug[1]; });
+    if (post) { minimizeAll(); openBlogFinder(); openBlogPost(post.file, post.title, post.date); }
+  } else {
+    minimizeAll();
+  }
+});
