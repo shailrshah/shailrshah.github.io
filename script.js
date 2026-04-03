@@ -125,6 +125,7 @@ function dockMailClick() {
 function openMail() {
   minimizeAll();
   playClick();
+  history.pushState({}, '', '/contact');
   document.getElementById('mailWindow').classList.remove('hidden');
   document.getElementById('mailDockDot').classList.add('active');
   bringToFront(document.getElementById('mailWindow'));
@@ -265,6 +266,7 @@ function minimizeWindow() {
 }
 function openWindow() {
   playClick();
+  history.pushState({}, '', '/resume');
   document.getElementById('desktop').classList.remove('visible');
   document.getElementById('window').classList.remove('hidden');
   document.getElementById('dock').classList.add('hidden');
@@ -757,6 +759,7 @@ function dockBlogClick() {
 function openBlogFinder() {
   minimizeAll();
   playClick();
+  history.pushState({}, '', '/blog');
   showBlogList();
   document.getElementById('blogFinder').classList.remove('hidden');
   document.getElementById('blogDockDot').classList.add('active');
@@ -795,6 +798,7 @@ function showBlogList() {
 
 function openBlogPost(file, title, date) {
   playClick();
+  history.pushState({}, '', '/blog/' + file.replace('.md', ''));
   var finder = document.getElementById('blogFinder');
   finder.style.top = '2.5rem';
   finder.style.transform = 'translateX(-50%)';
@@ -818,3 +822,26 @@ console.log(
   'font-size:13px;color:#63d4f5;'
 );
 
+
+(function() {
+  var path = location.pathname;
+  var blogSlug = path.match(/^\/blog\/(.+)$/);
+  var splash = document.getElementById('splash');
+
+  function skipSplash() {
+    if (splash) splash.remove();
+    splashDismissed = true;
+    localStorage.setItem('visited', '1');
+  }
+
+  if (path === '/resume') {
+    skipSplash(); setTimeout(openWindow, 100);
+  } else if (path === '/contact') {
+    skipSplash(); setTimeout(openMail, 100);
+  } else if (path === '/blog') {
+    skipSplash(); setTimeout(openBlogFinder, 100);
+  } else if (blogSlug) {
+    var post = blogPosts.find(function(p) { return p.file.replace('.md', '') === blogSlug[1]; });
+    if (post) { skipSplash(); setTimeout(function() { openBlogFinder(); openBlogPost(post.file, post.title, post.date); }, 100); }
+  }
+})();
