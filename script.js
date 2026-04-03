@@ -703,6 +703,18 @@ function dismissSplash() {
   setTimeout(function() { splash.remove(); autoOpen(); localStorage.setItem('visited','1'); }, 500);
 }
 
+function lockScreen() {
+  playClick();
+  minimizeAll();
+  history.pushState({}, '', '/');
+  var splash = document.createElement('div');
+  splash.className = 'splash';
+  splash.id = 'splash';
+  splash.innerHTML = '<div class="splash-content"><div class="splash-host">shail.dev</div><div class="splash-avatar">👤</div><div class="splash-name">Guest</div><button class="splash-btn" onclick="dismissSplash()">Log In</button><div class="splash-footer">The terminal is the resume.<br>Built with vanilla HTML, CSS, and JS. No frameworks were harmed.</div></div>';
+  document.body.appendChild(splash);
+  splashDismissed = false;
+}
+
 function autoOpen() {
   if (localStorage.getItem('visited')) { return; }
   var cursor = document.getElementById('fakeCursor');

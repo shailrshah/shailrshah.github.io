@@ -591,13 +591,19 @@
       -webkit-backdrop-filter: blur(20px);
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       padding: 0 16px;
       font-size: 12px;
       color: var(--text);
       z-index: 9998;
       font-family: var(--font);
     }
+    #menuLock {
+      cursor: pointer;
+      opacity: 0.7;
+      font-size: 13px;
+    }
+    #menuLock:hover { opacity: 1; }
 
     /* Animated cursor */
     .fake-cursor {
