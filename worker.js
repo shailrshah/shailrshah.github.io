@@ -5,6 +5,15 @@ const blogPosts = {
   'zero-per-month':        { title: 'Zero Per Month',        date: '2026-04-02' },
 };
 
+function excerpt(md) {
+  const text = md
+    .replace(/^#.*$/mg, '')         // remove headings
+    .replace(/[*_`>#\[\]]/g, '')    // remove markdown symbols
+    .replace(/\s+/g, ' ')           // collapse whitespace
+    .trim();
+  return text.length > 160 ? text.slice(0, 157) + '...' : text;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -13,9 +22,14 @@ export default {
     if (blogSlug) {
       const post = blogPosts[blogSlug[1]];
       if (post) {
-        const indexRes = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin), request));
+        const [indexRes, mdRes] = await Promise.all([
+          env.ASSETS.fetch(new Request(new URL('/index.html', url.origin), request)),
+          env.ASSETS.fetch(new Request(new URL(`/blog/${blogSlug[1]}.md`, url.origin), request)),
+        ]);
+
+        const md = mdRes.ok ? await mdRes.text() : '';
         const title = `${post.title} — Shail R. Shah`;
-        const description = `Published ${post.date} · shail.dev`;
+        const description = md ? excerpt(md) : `Published ${post.date} · shail.dev`;
         const postUrl = `https://shail.dev/blog/${blogSlug[1]}`;
 
         return new HTMLRewriter()
